@@ -1,0 +1,7 @@
+22:37:48 centralManager:didDiscoverPeripheral:advertisementData:RSSI: name:estimote state:Disconnected advertisementData:{
+    kCBAdvDataIsConnectable = 1;
+    kCBAdvDataLocalName = estimote;
+    kCBAdvDataServiceData =     {
+        "Device Information" = <a3411f3b 0ec2b6a3 411f3b>;
+    };
+}, RSSI:-95

@@ -1,0 +1,9 @@
+22:37:57 centralManager:didDiscoverPeripheral:advertisementData:RSSI: name:estimote state:Disconnected advertisementData:{
+    kCBAdvDataIsConnectable = 1;
+    kCBAdvDataLocalName = estimote;
+    kCBAdvDataServiceData =     {
+        "Device Information" = <5716a2b0 18c9b657 16a2b0>;
+    };
+}, RSSI:-95
+22:38:15 centralManager:didConnectPeripheral: name:estimote state:Connected 
+22:38:16 centralManager:didDisconnectPeripheral:error: name:estimote state:Disconnected error:Error Domain=CBErrorDomain Code=10 "The connection has failed unexpectedly." UserInfo=0x170078c40 {NSLocalizedDescription=The connection has failed unexpectedly.}

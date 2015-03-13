@@ -1,0 +1,20 @@
+22:48:52 centralManager:didDiscoverPeripheral:advertisementData:RSSI: name:Apple TV state:Disconnected
+advertisementData:{
+    kCBAdvDataIsConnectable = 1;
+}, RSSI:-71
+
+22:48:52 centralManager:didConnectPeripheral: name:Apple TV state:Connected
+
+22:48:53 peripheral:didDiscoverServices: name:Apple TV state:Connected
+error:(null), services:(
+    "<CBService: 0x17407d840, isPrimary = YES, UUID = Continuity>"
+)
+
+22:48:53 peripheral:didDiscoverCharacteristicsForService:error: name:Apple TV state:Connected
+error:(null), service:Continuity, characteristics:(
+    "<CBCharacteristic: 0x17008fd20, UUID = Continuity, properties = 0x98, value = (null), notifying = NO>"
+)
+
+22:48:53 peripheral:didUpdateNotificationStateForCharacteristic:error: name:Apple TV state:Connected
+error:Error Domain=CBATTErrorDomain Code=15 "Encryption is insufficient." UserInfo=0x17407e840 {NSLocalizedDescription=Encryption is insufficient.}, characteristic:Continuity, isNotifying:0
+
