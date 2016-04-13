@@ -25,19 +25,19 @@
     dispatch_once(&onceToken, ^{
         
         instance = [[self alloc] init];
-        [instance initInstance];
+        [instance commonInit];
     });
     
     return instance;
 }
 
-- (void)initInstance {
+- (void)commonInit {
     
     self.fileHandles = @{}.mutableCopy;
 
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setLocale:[NSLocale systemLocale]];
-    [dateFormatter setDateStyle:NSDateFormatterNoStyle];
+    [dateFormatter setDateStyle:NSDateFormatterShortStyle];
     [dateFormatter setTimeStyle:NSDateFormatterMediumStyle];
     self.formatter = dateFormatter;
 }
@@ -47,11 +47,11 @@
 #pragma mark - Private
 
 // create a file handle
-- (NSFileHandle *)createLogFileForPeripheral:(CBPeripheral *)peripheral {
+- (NSFileHandle *)createLogFileForPeripheral:(CBPeripheral *)peripheral class:(NSString *)className {
 
     NSString *uuidStr = peripheral.identifier.UUIDString;
     
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSArray<NSString *> *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString *baseDir = [paths firstObject];
     NSString *logsDirectory = [baseDir stringByAppendingPathComponent:@"Logs"];
     
@@ -64,7 +64,7 @@
                                      error:nil];
     }
     
-    NSString *filename = [NSString stringWithFormat:@"%@.log", uuidStr];
+    NSString *filename = [NSString stringWithFormat:@"%@_%@.log", className, uuidStr];
     NSString *filePath = [logsDirectory stringByAppendingPathComponent:filename];
     
     BOOL result = [fileManager createFileAtPath:filePath
@@ -84,7 +84,7 @@
 }
 
 // retrieve a file handle
-- (NSFileHandle *)fileHandleForPeripheral:(CBPeripheral *)peripheral {
+- (NSFileHandle *)fileHandleForPeripheral:(CBPeripheral *)peripheral class:(NSString *)className {
 
     NSFileHandle *fileHandle = self.fileHandles[peripheral.identifier.UUIDString];
     
@@ -94,14 +94,14 @@
     }
     
     // not exist -> create
-    return [self createLogFileForPeripheral:peripheral];
+    return [self createLogFileForPeripheral:peripheral class:className];
 }
 
 
 // =============================================================================
 #pragma mark - Public
 
-- (void)logForPeripheral:(CBPeripheral *)peripheral function:(NSString *)function format:(NSString *)format, ... {
+- (void)logForPeripheral:(CBPeripheral *)peripheral class:(NSString *)className function:(NSString *)function toConsole:(BOOL)toConsole format:(NSString *)format, ... {
     
     NSString *stateStr;
     switch (peripheral.state) {
@@ -120,7 +120,7 @@
     }
     
 
-    NSString *message = [NSString stringWithFormat:@"%@ %@ name:%@ state:%@",
+    NSString *message = [NSString stringWithFormat:@"%@/%@ name:%@ state:%@",
                          [self.formatter stringFromDate:[NSDate date]], function, peripheral.name, stateStr];
     if (format) {
         va_list ap;
@@ -129,9 +129,11 @@
         message = [NSString stringWithFormat:@"%@\n%@", message, formattedStr];
     }
     
-    NSLog(@"%@", message);
+    if (toConsole) {
+        NSLog(@"%@", message);
+    }
     
-    NSFileHandle *handle = [self fileHandleForPeripheral:peripheral];
+    NSFileHandle *handle = [self fileHandleForPeripheral:peripheral class:className];
     
     [handle writeData:[[message stringByAppendingString:@"\n\n"] dataUsingEncoding:NSUTF8StringEncoding]];
     [handle synchronizeFile];    
